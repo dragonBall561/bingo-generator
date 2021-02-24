@@ -10,4 +10,5 @@
 ## Instructions to Run
 
 * Install Python
+* Install Termcolor (`pip install termcolor`)
 * Run `caller.py`

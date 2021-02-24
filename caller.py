@@ -1,13 +1,3 @@
-'''
-Reference:
-
-Add to a set: myset.add(item)
-
-Check if a something is in a set: 
-if item in myset:
-	do_stuff
-else ...
-'''
 #Awesome Ban System
 f = open(".ban.txt", "a+")
 f.write("")
@@ -17,37 +7,43 @@ import sys
 import random
 from random import randint
 from random import choice
-import board
+from termcolor import colored
 
 used = set()
 
-def generate_board(amount):
-	for i in range(0, amount):
-		grid = [0]*25
-		for col in range(0, 5):
-			nums = set()
-			row = 0
-			while row < 5:
-				numb = random.randint(col*15 + 1, col*15 + 15)
-				#Formatting...
-				numb = str(numb)
-				if len(numb) == 1:
-					numb = numb+" "
-				#Done Formatting
-				if numb in nums:
-					continue
-				nums.add(numb)
-				grid[row*5 + col] = numb
-				row += 1
 
-		grid[12] = 'XX'
-		print("________________")
-		print("|B |I |N |G |O |")
-		for row in range(0, 5):
-			current = grid[row*5: row*5 + 5]
-			print('|' + '|'.join(current)+ '|')
-		print("‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾")
-		print(grid)
+def print_board(arr):
+	print("________________")
+	print("|B |I |N |G |O |")
+	for row in range(0, 5):
+		current = arr[row*5: row*5 + 5]
+		print('|', end="")
+		print(*current, sep='|', end="")
+		print('|')
+	print("‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾")
+
+def generate_board():
+	grid = [0]*25
+	for col in range(0, 5):
+		nums = set()
+		row = 0
+		while row < 5:
+			numb = random.randint(col*15 + 1, col*15 + 15)
+			#Formatting...
+			numb = str(numb)
+			if len(numb) == 1:
+				numb = numb+" "
+			#Done Formatting
+			if numb in nums:
+				continue
+			nums.add(numb)
+			grid[row*5 + col] = numb
+			row += 1
+		
+		
+	grid[12] = colored('XX', 'green')
+	print_board(grid)
+	return grid
 
 def generate_numb():
 	numb = random.randint(1, 75)
@@ -55,26 +51,34 @@ def generate_numb():
 
 def sort_numb(numb):
 	if 1 <= numb <= 15:
-		letter = 'B'
+		letter = 'b'
 	elif 16 <= numb <= 30:
-		letter = 'I'
+		letter = 'i'
 	elif 31 <= numb <= 45:
-		letter = 'N'
+		letter = 'n'
 	elif 46 <= numb <= 60:
-		letter = 'G'
+		letter = 'g'
 	else:
 		letter = 'o'
 	numb = str(numb)
 	comb = letter+numb
 	return comb
 
-def call_comb(comb):
-	print("---" *7)
+def call_comb(comb, numb, arr):
+	print("***" *7)
 	print("Your Number Was " + comb)
-	print("---" *7)
-	print("")
+	numb = str(numb)
+	if len(numb) == 1:
+		numb = numb + ' '
+	if numb in arr:
+		index = arr.index(numb)
+		arr[index] = colored('XX', 'green')
+	print('***' *7)
+	print('This is your current board')
+	print_board(arr)
+	print("***" *7)
 
-def program(): #The main code of the Bingo Generator will be kept here
+def program(arr): #The main code of the Bingo Generator will be kept here
 	spammer = True # Just for now
 	cheater = False # Just for now
 	count = 1
@@ -85,13 +89,12 @@ def program(): #The main code of the Bingo Generator will be kept here
 			continue
 		else:
 			used.add(comb)
-			call_comb(comb)
+			call_comb(comb, numb, arr)
 		print("Press Enter to Continue")
 		print("Press 'bingo' to Win and Go Back to the Main Menu")
-		print("---" *7)
+		print("***" *7)
 		keyboard_choice = input()
 		if keyboard_choice == '':
-			print(len(used))
 			count += 1
 			continue
 		elif keyboard_choice == 'bingo':
@@ -115,7 +118,7 @@ def program(): #The main code of the Bingo Generator will be kept here
 		f.close
 		sys.exit(0)
 	elif cheater:
-		print("---" *7)
+		print("***" *7)
 		print("CHEATER!")
 		print("Being Annoying Because CHEATERS NEVER WIN!")
 		f = open(".ban.txt", 'w')
@@ -123,30 +126,23 @@ def program(): #The main code of the Bingo Generator will be kept here
 		f.close
 		sys.exit(0)
 	else:
-		print("---" *7)
+		print("***" *7)
 		menu()
 
 # Menu
 def menu(): #For Restarting
 	print("Hello and Welcome to the Bingo Caller/Generator")
 	print("Please choose one of the options below, then click enter")
-	print("")
+	print("***" *7)
 	print("1) Start The Program")
 	print("2) Exit the Program")
-	print("---" *7)
+	print("***" *7)
 	keyboard_choice = input()
 	if keyboard_choice == '1':
-		print("---" *7)
+		print("***" *7)
 		print("Generating the Boards")
-		print("How many boards do you need?")
-		choice = input()
-		try:
-			choice = int(choice)
-		except ValueError:
-			print("Not a Number, Try Again")
-			sys.exit(0)
-		generate_board(keyboard_choice)
-		program()
+		grid = generate_board()
+		program(grid)
 	if keyboard_choice == '3':
 		sys.exit(0)
 
