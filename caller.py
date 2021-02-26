@@ -127,6 +127,8 @@ def program(arr): #The main code of the Bingo Generator will be kept here
 		sys.exit(0)
 	else:
 		print("***" *7)
+		print("You Win!!!")
+		print("***" *7)
 		menu()
 
 # Menu
@@ -146,11 +148,12 @@ def menu(): #For Restarting
 	if keyboard_choice == '3':
 		sys.exit(0)
 
+
 f = open(".ban.txt", "r")
 if "yep" in f:
 	print("You Got Banned")
-	print("(**oof)")
-	f.close
+	print("**oof")
+	f.close()
 	sys.exit(0)
 else:
 	menu()
